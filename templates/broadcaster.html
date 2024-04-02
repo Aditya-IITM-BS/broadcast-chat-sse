@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div>
+      <div id="input-box">
+        <input type="text" placeholder="name" id="input-name" />
+        <input type="text" placeholder="type your message" id="input-message" />
+        <button onclick="sendMessage()">Broadcast message</button>
+      </div>
+      <div id="chat-box"></div>
+    </div>
+    <script>
+      function sendMessage() {
+        const name = document.querySelector("#input-name");
+        const message = document.querySelector("#input-message");
+        const url = `/message/${name.value}/${message.value}`;
+        fetch(url)
+          .then((res) => {
+            console.log(res.status);
+          })
+          .catch((e) => {
+            console.error("error", e);
+          });
+      }
+
+      // sse
+      const eventSrc = new EventSource("/stream");
+
+      eventSrc.addEventListener(
+        "message",
+        function (e) {
+          const chatBox = document.querySelector("#chat-box");
+          const newMessage = document.createElement("h4");
+          data = JSON.parse(e.data);
+          console.log(data);
+          newMessage.textContent = `${data.name} : ${data.message}`;
+          chatBox.appendChild(newMessage);
+        },
+        true
+      );
+    </script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Broadcast</title>
+  </head>
+  <body>
+    <div id="chat-box">
+      <h1>Broadcast Through SSE</h1>
+    </div>
+    <script>
+      const eventSrc = new EventSource("/stream");
+
+      eventSrc.addEventListener("online", function (e) {
+        const chatBox = document.querySelector("#chat-box");
+        const newMessage = document.createElement("h4");
+        data = JSON.parse(e.data);
+        console.log(data);
+        newMessage.textContent = `${data.name} : ${data.message}`;
+        chatBox.appendChild(newMessage);
+      });
+    </script>
+  </body>
+</html>
